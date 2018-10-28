@@ -1,5 +1,6 @@
 package test.bsam.crawler;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.nodes.Element;
 
 import java.util.Set;
@@ -14,10 +15,17 @@ public class PathProvider {
     public PathProvider(Element element) {
         this.element = element;
         this.stringBuilder = new StringBuilder();
-        addPath(element);
     }
 
-    private void addPath(Element element) {
+    public String getPath() {
+        if (element == null) {
+            return StringUtils.EMPTY;
+        }
+        buildPath(element);
+        return stringBuilder.toString();
+    }
+
+    private void buildPath(Element element) {
         String id = element.id();
         Set<String> classes = element.classNames();
         if (isNotEmpty(id)) {
@@ -29,11 +37,7 @@ public class PathProvider {
         Element parent = element.parent();
         if (parent != null) {
             stringBuilder.insert(0, " > ");
-            addPath(parent);
+            buildPath(parent);
         }
-    }
-
-    public String getPath() {
-        return stringBuilder.toString();
     }
 }
